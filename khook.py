@@ -12,8 +12,7 @@ def init_hook(**params):
 
 
 def preprocess(inputs, ctx):
-    input_image = inputs['image'][0]
-    input_image = Image.open(io.BytesIO(input_image[0])).convert("RGB")
+    input_image = Image.open(io.BytesIO(inputs['image'][0])).convert("RGB")
     h = input_image.size[0]
     w = input_image.size[1]
     ratio = h * 1.0 / w
@@ -33,7 +32,7 @@ def preprocess(inputs, ctx):
 
 
 def postprocess(outputs, ctx):
-    image = outputs['0']
+    image = outputs['0'][0]
     image = (image * 0.5 + 0.5) * 255
     image = np.transpose(image, (1, 2, 0))
     image_bytes = io.BytesIO()
