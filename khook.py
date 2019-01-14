@@ -38,5 +38,4 @@ def postprocess(outputs, ctx):
     image = np.transpose(image,(1,2,0))
     image_bytes = io.BytesIO()
     Image.fromarray(np.uint8(image)).save(image_bytes, format='PNG')
-    outputs['image'] = image_bytes.getvalue()
-    return outputs
+    return {'image':image_bytes.getvalue()}
