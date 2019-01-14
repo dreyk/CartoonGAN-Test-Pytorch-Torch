@@ -13,7 +13,7 @@ def init_hook(**params):
 
 def preprocess(inputs, ctx):
     input_image = inputs['image'][0]
-    input_image = Image.fromarray(input_image)
+    input_image = Image.fromarray(input_image).convert("RGB")
     h = input_image.size[0]
     w = input_image.size[1]
     ratio = h *1.0 / w
