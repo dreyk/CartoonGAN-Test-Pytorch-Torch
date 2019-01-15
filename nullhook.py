@@ -14,7 +14,7 @@ PARAMS = {
 }
 model = None
 def init_hook(**params):
-    LOG.info('Loaded. {}'.format(**params))
+    LOG.info('Loaded. {}'.format(params))
     global PARAMS
     PARAMS.update(params)
     from network.Transformer import Transformer
