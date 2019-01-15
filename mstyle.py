@@ -39,7 +39,7 @@ def init_hook(**params):
     global style_model
     style_model = Net(ngf=128)
     LOG.info('Loading model: {}'.format(PARAMS['model_path']))
-    style_model.load_state_dict(torch.load(PARAMS['model_path']), False)
+    style_model.load_state_dict(torch.load(PARAMS['model_path']))
     if cuda:
         style_model.cuda()
     else:
