@@ -3,13 +3,25 @@ import logging
 
 import numpy as np
 from PIL import Image
-
+import torch
+import torchvision.transforms as transforms
+from torch.autograd import Variable
 
 LOG = logging.getLogger(__name__)
 
-
+PARAMS = {
+    'pytorch_model': 'None',
+}
+model = None
 def init_hook(**params):
-    LOG.info('Loaded.')
+    LOG.info('Loaded. {}'.format(**params))
+    global PARAMS
+    PARAMS.update(params)
+    from network.Transformer import Transformer
+    global model
+    model = Transformer()
+    model.load_state_dict(torch.load(PARAMS['pytorch_model']))
+    model.eval()
 
 
 def preprocess(inputs, ctx):
@@ -28,12 +40,11 @@ def preprocess(inputs, ctx):
     input_image = input_image[:, :, [2, 1, 0]]
     input_image = np.transpose(input_image, (2, 0, 1))
     input_image = -1 + 2 * input_image
-    input_image = np.expand_dims(input_image, axis=0)
-    return {'image': input_image}.items()
-
-
-def postprocess(outputs, ctx):
-    image = outputs['0'][0]
+    #input_image = np.expand_dims(input_image, axis=0)
+    input_image = transforms.ToTensor()(input_image).unsqueeze(0)
+    input_image = Variable(input_image, volatile=True).float()
+    output_image = model(input_image)
+    image = output_image[0].numpy()
     image = (image * 0.5 + 0.5) * 255
     image = np.transpose(image, (1, 2, 0))
     image_bytes = io.BytesIO()
