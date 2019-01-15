@@ -17,7 +17,7 @@ PARAMS = {
 }
 models = {}
 max_size = 1024
-
+cuda = False
 
 def init_hook(**params):
     LOG.info('Loaded. {}'.format(params))
@@ -35,6 +35,10 @@ def init_hook(**params):
         model.eval()
         global models
         models[f.split('_')[0]] = model
+    if torch.cuda.is_available():
+        global cuda
+        cuda = True
+    LOG.info('Use cuda: {}'.format(cuda))
 
 
 def preprocess(inputs, ctx):
@@ -58,7 +62,10 @@ def preprocess(inputs, ctx):
     input_image = -1 + 2 * input_image / 255.0
     # input_image = np.expand_dims(input_image, axis=0)
     input_image = transforms.ToTensor()(input_image).unsqueeze(0)
-    input_image = Variable(input_image, volatile=True).float()
+    if cuda:
+        input_image = Variable(input_image, volatile=True).cuda()
+    else:
+        input_image = Variable(input_image, volatile=True).float()
     output_image = model(input_image)[0]
     output_image = output_image[[2, 1, 0], :, :]
     image = output_image.data.cpu().float().numpy()
