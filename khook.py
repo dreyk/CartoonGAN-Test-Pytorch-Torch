@@ -29,7 +29,7 @@ def preprocess(inputs, ctx):
     input_image = np.transpose(input_image, (2, 0, 1))
     input_image = -1 + 2 * input_image
     input_image = np.expand_dims(input_image, axis=0)
-    return {'image': input_image}.items()
+    return {'image': input_image}
 
 
 def postprocess(outputs, ctx):
