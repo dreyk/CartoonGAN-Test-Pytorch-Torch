@@ -29,7 +29,7 @@ def init_hook(**params):
     LOG.info('Max size {}'.format(max_size))
     if torch.cuda.is_available():
         global cuda
-    cuda = True
+        cuda = True
     LOG.info('Use cuda: {}'.format(cuda))
     for m in glob.glob(PARAMS['model_path'] + '/*.pth'):
         f = os.path.basename(m)
