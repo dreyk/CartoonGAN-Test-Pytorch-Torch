@@ -34,6 +34,7 @@ def preprocess(inputs, ctx):
 
 def postprocess(outputs, ctx):
     image = outputs['0'][0]
+    image = image[[2, 1, 0], :, :]
     image = (image * 0.5 + 0.5) * 255
     image = np.transpose(image, (1, 2, 0))
     image_bytes = io.BytesIO()
