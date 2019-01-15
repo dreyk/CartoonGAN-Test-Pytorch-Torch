@@ -66,6 +66,20 @@ def init_hook(**params):
 
 def preprocess(inputs, ctx):
     content_image = Image.open(io.BytesIO(inputs['image'][0]))
+    w = content_image.size[0]
+    h = content_image.size[1]
+    if w > h:
+        if w > 1024:
+            ratio = float(w) / 1024.0
+            w = 1024
+            h = float(h/ratio)
+    else:
+        if h > 1024:
+            ratio = float(h) / 1024.0
+            h = 1024
+            w = float(w/ratio)
+
+
     content_image = tensor_load_rgbimage(content_image, size=max_size, keep_asp=True).unsqueeze(0)
     content_image = preprocess_batch(content_image)
     if cuda:
@@ -78,6 +92,7 @@ def preprocess(inputs, ctx):
     output = style_model(content_image)
     image = tensor_save_bgrimage(output.data[0], cuda)
     image_bytes = io.BytesIO()
+    image.resize((h, w), Image.BICUBIC)
     image.save(image_bytes, format='PNG')
     return {'image': image_bytes.getvalue()}
 
@@ -303,4 +318,4 @@ def preprocess_batch(batch):
     return batch
 
 
-#la_muse,candy,composition_vii,escher_sphere,feathers,frida_kahlo,mosaic,mosaic_ducks_massimo,pencil,picasso_selfport1907,rain_princess,robert,seated-nude,shipwreck,starry_night,stars2,strip,the_scream,udnie,wave,woman-with-hat-matisse
+#pencil,la_muse,candy,composition_vii,escher_sphere,feathers,frida_kahlo,mosaic,mosaic_ducks_massimo,picasso_selfport1907,rain_princess,robert,seated-nude,shipwreck,starry_night,stars2,strip,the_scream,udnie,wave,woman-with-hat-matisse
