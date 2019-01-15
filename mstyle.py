@@ -78,7 +78,8 @@ def preprocess(inputs, ctx):
             ratio = float(h) / 1024.0
             h = 1024
             w = float(w/ratio)
-
+    h = int(h)
+    w = int(w)
 
     content_image = tensor_load_rgbimage(content_image, size=max_size, keep_asp=True).unsqueeze(0)
     content_image = preprocess_batch(content_image)
