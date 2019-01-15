@@ -92,7 +92,7 @@ def preprocess(inputs, ctx):
     output = style_model(content_image)
     image = tensor_save_bgrimage(output.data[0], cuda)
     image_bytes = io.BytesIO()
-    image.resize((h, w), Image.BICUBIC)
+    image = image.resize((h, w), Image.BICUBIC)
     image.save(image_bytes, format='PNG')
     return {'image': image_bytes.getvalue()}
 
