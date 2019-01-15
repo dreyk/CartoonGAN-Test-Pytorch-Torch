@@ -53,8 +53,10 @@ def init_hook(**params):
         style_model.float()
     for m in glob.glob(PARAMS['styles_path'] + '/*.jpg'):
         img = Image.open(m)
-        style = tensor_load_rgbimage(img, size=max_size, cuda=cuda).unsqueeze(0)
+        style = tensor_load_rgbimage(img, size=max_size).unsqueeze(0)
         style = preprocess_batch(style)
+        if cuda:
+            style = style.cuda()
         global styles
         f = os.path.basename(m)
         f = f.split('.')[0]
@@ -64,11 +66,14 @@ def init_hook(**params):
 
 def preprocess(inputs, ctx):
     content_image = Image.open(io.BytesIO(inputs['image'][0]))
-    content_image = tensor_load_rgbimage(content_image, size=max_size, keep_asp=True,cuda=cuda).unsqueeze(0)
+    content_image = tensor_load_rgbimage(content_image, size=max_size, keep_asp=True).unsqueeze(0)
+    content_image = preprocess_batch(content_image)
+    if cuda:
+        content_image = content_image.cuda()
     style = inputs.get('style', ['candy'])[0].decode("utf-8")
     style = styles[style]
     style_v = Variable(style)
-    content_image = Variable(preprocess_batch(content_image))
+    content_image = Variable(content_image)
     style_model.setTarget(style_v)
     output = style_model(content_image)
     image = tensor_save_bgrimage(output.data[0], cuda)
@@ -258,7 +263,7 @@ class Net(nn.Module):
         return self.model(input)
 
 
-def tensor_load_rgbimage(img, size=None, scale=None, keep_asp=False, cuda=False):
+def tensor_load_rgbimage(img, size=None, scale=None, keep_asp=False):
     img = img.convert('RGB')
     if size is not None:
         if keep_asp:
@@ -270,10 +275,7 @@ def tensor_load_rgbimage(img, size=None, scale=None, keep_asp=False, cuda=False)
     elif scale is not None:
         img = img.resize((int(img.size[0] / scale), int(img.size[1] / scale)), Image.ANTIALIAS)
     img = np.array(img).transpose(2, 0, 1)
-    if cuda:
-        img = torch.from_numpy(img).cuda()
-    else:
-        img = torch.from_numpy(img).float()
+    img = torch.from_numpy(img).float()
     return img
 
 
@@ -299,3 +301,6 @@ def preprocess_batch(batch):
     batch = torch.cat((b, g, r))
     batch = batch.transpose(0, 1)
     return batch
+
+
+#la_muse,candy,composition_vii,escher_sphere,feathers,frida_kahlo,mosaic,mosaic_ducks_massimo,pencil,picasso_selfport1907,rain_princess,robert,seated-nude,shipwreck,starry_night,stars2,strip,the_scream,udnie,wave,woman-with-hat-matisse
