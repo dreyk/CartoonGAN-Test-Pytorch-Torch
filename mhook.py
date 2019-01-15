@@ -27,19 +27,22 @@ def init_hook(**params):
     max_size = PARAMS.get('max_size', '1024')
     max_size = int(max_size)
     LOG.info('Max size {}'.format(max_size))
+    if torch.cuda.is_available():
+        global cuda
+    cuda = True
+    LOG.info('Use cuda: {}'.format(cuda))
     for m in glob.glob(PARAMS['model_path'] + '/*.pth'):
         f = os.path.basename(m)
         LOG.info('loading model {} {}'.format(f, m))
         model = Transformer()
         model.load_state_dict(torch.load(m))
         model.eval()
+        if cuda:
+            model.cuda()
+        else:
+            model.float()
         global models
         models[f.split('_')[0]] = model
-    if torch.cuda.is_available():
-        global cuda
-        cuda = True
-    LOG.info('Use cuda: {}'.format(cuda))
-
 
 def preprocess(inputs, ctx):
     input_image = Image.open(io.BytesIO(inputs['image'][0])).convert("RGB")
