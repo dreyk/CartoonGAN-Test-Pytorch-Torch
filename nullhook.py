@@ -43,9 +43,9 @@ def preprocess(inputs, ctx):
     #input_image = np.expand_dims(input_image, axis=0)
     input_image = transforms.ToTensor()(input_image).unsqueeze(0)
     input_image = Variable(input_image, volatile=True).float()
-    output_image = model(input_image)
+    output_image = model(input_image)[0]
     output_image = output_image[[2, 1, 0], :, :]
-    image = output_image[0].data.cpu().float().numpy()
+    image = output_image.data.cpu().float().numpy()
     image = (image * 0.5 + 0.5) * 255
     image = np.transpose(image, (1, 2, 0))
     image_bytes = io.BytesIO()
