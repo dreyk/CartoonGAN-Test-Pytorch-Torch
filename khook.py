@@ -24,10 +24,10 @@ def preprocess(inputs, ctx):
         w = 320
         h = int(w * ratio)
     input_image = input_image.resize((h, w), Image.BICUBIC)
-    input_image = np.asarray(input_image)
+    input_image = np.asarray(input_image,dtype=np.float32)
     input_image = input_image[:, :, [2, 1, 0]]
     input_image = np.transpose(input_image, (2, 0, 1))
-    input_image = -1 + 2 * input_image
+    input_image = -1 + 2 * input_image/255.0
     input_image = np.expand_dims(input_image, axis=0)
     return {'image': input_image}
 
