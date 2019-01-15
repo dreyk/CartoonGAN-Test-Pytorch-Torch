@@ -71,9 +71,9 @@ def preprocess(inputs, ctx):
     content_image = Variable(preprocess_batch(content_image))
     style_model.setTarget(style_v)
     output = style_model(content_image)
-    tensor_save_bgrimage(output.data[0], cuda)
-    image = image_bytes = io.BytesIO()
-    Image.fromarray(np.uint8(image)).save(image_bytes, format='PNG')
+    image = tensor_save_bgrimage(output.data[0], cuda)
+    image_bytes = io.BytesIO()
+    image.save(image_bytes, format='PNG')
     return {'image': image_bytes.getvalue()}
 
 
