@@ -290,7 +290,7 @@ def tensor_save_rgbimage(tensor, cuda=False):
 def tensor_save_bgrimage(tensor, cuda=False):
     (b, g, r) = torch.chunk(tensor, 3)
     tensor = torch.cat((r, g, b))
-    tensor_save_rgbimage(tensor, cuda)
+    return tensor_save_rgbimage(tensor, cuda)
 
 
 def preprocess_batch(batch):
