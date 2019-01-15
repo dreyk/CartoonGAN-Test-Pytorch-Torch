@@ -26,7 +26,7 @@ def init_hook(**params):
     global max_size
     max_size = PARAMS.get('max_size', '1024')
     max_size = int(max_size)
-    for m in glob.glob(PARAMS['model_path'] + '/*.pth'):
+    for m in glob.glob(PARAMS['model_path'][0] + '/*.pth'):
         f = os.path.basename(m)
         LOG.info('loading model {} {}'.format(f, m))
         model = Transformer()
