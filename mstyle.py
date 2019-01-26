@@ -95,7 +95,7 @@ def preprocess(inputs, ctx):
     image_bytes = io.BytesIO()
     image = image.resize((w, h), Image.BICUBIC)
     image.save(image_bytes, format='PNG')
-    return {'image': image_bytes.getvalue()}
+    return {'output': image_bytes.getvalue()}
 
 
 # define Gram Matrix
