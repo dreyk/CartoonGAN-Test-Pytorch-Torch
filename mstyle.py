@@ -23,6 +23,7 @@ max_size = 1024
 cuda = False
 styles = {}
 
+shornames = {'mosaic': 'mosaic', 'picasso': 'picasso_selfport1907', 'robert': 'robert', 'candy': 'candy', 'the': 'the_scream', 'composition': 'composition_vii', 'shipwreck': 'shipwreck', 'rain': 'rain_princess', 'mosaic1': 'mosaic_ducks_massimo', 'escher': 'escher_sphere', 'udnie': 'udnie', 'wave': 'wave', 'woman-with-hat-matisse': 'woman-with-hat-matisse', 'la': 'la_muse', 'seated-nude': 'seated-nude', 'pencil': 'pencil', 'strip': 'strip', 'feathers': 'feathers', 'starry': 'starry_night', 'stars2': 'stars2', 'frida': 'frida_kahlo'}
 
 def init_hook(**params):
     LOG.info('Loaded. {}'.format(params))
@@ -86,6 +87,7 @@ def preprocess(inputs, ctx):
     if cuda:
         content_image = content_image.cuda()
     style = inputs.get('style', ['candy'])[0].decode("utf-8")
+    style = shornames.get(style,style)
     style = styles[style]
     style_v = Variable(style)
     content_image = Variable(content_image)
